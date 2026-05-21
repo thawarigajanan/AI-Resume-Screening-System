@@ -11,4 +11,6 @@ public interface CandidateService {
     List<Candidate> searchBySkill(String skill);
 
     List<Candidate> getTopCandidates();
+    
+    List<Candidate> getAllCandidates();
 }

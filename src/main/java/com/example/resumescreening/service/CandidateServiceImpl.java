@@ -34,4 +34,12 @@ public class CandidateServiceImpl implements CandidateService {
         return candidateRepository
                 .findAllByOrderByMatchScoreDesc();
     }
+
+
+
+	@Override
+	public List<Candidate> getAllCandidates() {
+		// TODO Auto-generated method stub
+		return candidateRepository.findAll();
+	}
 }

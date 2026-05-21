@@ -92,6 +92,12 @@ public class CandidateController {
         return candidateService
                 .searchBySkill(skill);
     }
+    @GetMapping("/all")
+    public List<Candidate> getAllCandidates() {
+
+        return candidateService.getAllCandidates();
+    }
+    
     @GetMapping("/topCandidates")
     public List<Candidate> getTopCandidates() {
 
