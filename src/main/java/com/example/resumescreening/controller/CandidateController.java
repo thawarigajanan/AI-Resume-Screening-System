@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import com.example.resumescreening.entity.Candidate;
 import com.example.resumescreening.service.CandidateService;
 
+import jakarta.validation.Valid;
+
+import com.example.resumescreening.dto.CandidateDTO;
+
 @RestController
 @RequestMapping("/candidate")
 public class CandidateController {
@@ -23,13 +27,14 @@ public class CandidateController {
     private CandidateService candidateService;
 
     @PostMapping("/save")
-    public Candidate saveCandidate(@RequestBody Candidate candidate) {
+    public CandidateDTO saveCandidate( @Valid
+            @RequestBody Candidate candidate) {
 
         return candidateService.saveCandidate(candidate);
     }
 
     @PostMapping("/uploadResume")
-    public Candidate uploadResume(
+    public CandidateDTO uploadResume(
 
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,
@@ -93,7 +98,7 @@ public class CandidateController {
                 .searchBySkill(skill);
     }
     @GetMapping("/all")
-    public List<Candidate> getAllCandidates() {
+    public List<CandidateDTO> getAllCandidates() {
 
         return candidateService.getAllCandidates();
     }
@@ -103,5 +108,12 @@ public class CandidateController {
 
         return candidateService
                 .getTopCandidates();
+    }
+    @GetMapping("/{id}")
+    public Candidate getCandidateById(
+            @PathVariable Long id) {
+
+        return candidateService
+                .getCandidateById(id);
     }
 }
