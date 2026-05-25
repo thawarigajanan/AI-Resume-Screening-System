@@ -1,4 +1,6 @@
 package com.example.resumescreening.config;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+
+            .cors(cors -> {})   // Enable CORS
+
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
@@ -35,8 +40,25 @@ public class SecurityConfig {
                             "/auth/**",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
-                            "/swagger-ui.html")
+                            "/swagger-ui.html",
+                            "/auth/**",
+                            "/candidate/uploadResume",
+                            "/interview/**")
                     .permitAll()
+                    
+                    
+
+                    .requestMatchers(
+                            "/candidate/delete/**")
+                    .hasRole("ADMIN")
+                    
+                    
+
+                    .requestMatchers(
+                            "/candidate/all")
+                    .hasAnyRole("ADMIN", "USER")
+                    
+                    
 
                     .anyRequest()
                     .authenticated())
@@ -45,18 +67,22 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // IMPORTANT
-            
-        .addFilterBefore(jwtFilter,
-                UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(
+                    jwtFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            );
+
         return http.build();
     }
-
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config)
             throws Exception {
 
         return config.getAuthenticationManager();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

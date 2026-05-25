@@ -25,6 +25,26 @@ public class JwtUtil {
                 .signWith(SECRET_KEY)
                 .compact();
     }
+    
+    public static String generateRefreshToken(
+            String username) {
+
+        return Jwts.builder()
+
+                .setSubject(username)
+
+                .setIssuedAt(new Date())
+
+                .setExpiration(
+
+                        new Date(
+                                System.currentTimeMillis()
+                                        + 1000L * 60 * 60 * 24 * 7))
+
+                .signWith(SECRET_KEY)
+
+                .compact();
+    }
 
     public static String extractUsername(String token) {
 

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.example.resumescreening.entity.User;
 import com.example.resumescreening.repository.UserRepository;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 @Service
 public class CustomUserDetailsService
         implements UserDetailsService {
@@ -32,6 +34,10 @@ public class CustomUserDetailsService
 
                 user.getUsername(),
                 user.getPassword(),
-                Collections.emptyList());
+
+                Collections.singletonList(
+                        new SimpleGrantedAuthority(
+                                "ROLE_" + user.getRole()))
+        );
     }
 }

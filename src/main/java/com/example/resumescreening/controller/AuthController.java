@@ -1,6 +1,7 @@
 package com.example.resumescreening.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,12 +11,24 @@ import com.example.resumescreening.entity.User;
 import com.example.resumescreening.repository.UserRepository;
 import com.example.resumescreening.security.JwtUtil;
 
+import java.time.LocalDateTime;
+
+import com.example.resumescreening.dto.AuthResponse;
+
+import com.example.resumescreening.entity.RefreshToken;
+
+import com.example.resumescreening.repository.RefreshTokenRepository;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private RefreshTokenRepository
+            refreshTokenRepository;
 
     private BCryptPasswordEncoder encoder =
             new BCryptPasswordEncoder();
@@ -39,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(
+    public AuthResponse login(
             @RequestBody LoginRequest request) {
 
         User user =
@@ -49,17 +62,55 @@ public class AuthController {
                         .orElse(null);
 
         if (user == null) {
-            return "User Not Found";
+
+            throw new RuntimeException(
+                    "User Not Found");
         }
 
         if (!encoder.matches(
                 request.getPassword(),
                 user.getPassword())) {
 
-            return "Invalid Password";
+            throw new RuntimeException(
+                    "Invalid Password");
         }
 
-        return JwtUtil.generateToken(
+        String accessToken =
+                JwtUtil.generateToken(
+                        user.getUsername());
+
+        String refreshToken =
+                JwtUtil.generateRefreshToken(
+                        user.getUsername());
+
+        RefreshToken tokenEntity =
+                new RefreshToken();
+
+        tokenEntity.setToken(refreshToken);
+
+        tokenEntity.setUsername(
                 user.getUsername());
+
+        tokenEntity.setExpiryDate(
+                LocalDateTime.now()
+                        .plusDays(7));
+
+        refreshTokenRepository
+                .save(tokenEntity);
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken);
+    }
+    @PostMapping("/logout")
+
+    public String logout(
+
+            @RequestParam String refreshToken) {
+
+        refreshTokenRepository
+                .deleteByToken(refreshToken);
+
+        return "Logged out successfully";
     }
 }

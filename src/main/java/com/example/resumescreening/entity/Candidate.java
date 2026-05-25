@@ -24,7 +24,7 @@ public class Candidate {
 
     @Column(length = 10000)
     private String resumeText;
-
+    private String resumePath;
     private Double matchScore;
 
     public Candidate() {
@@ -81,4 +81,12 @@ public class Candidate {
     public void setMatchScore(Double matchScore) {
         this.matchScore = matchScore;
     }
+
+	public String getResumePath() {
+		return resumePath;
+	}
+
+	public void setResumePath(String resumePath) {
+		this.resumePath = resumePath;
+	}
 }
