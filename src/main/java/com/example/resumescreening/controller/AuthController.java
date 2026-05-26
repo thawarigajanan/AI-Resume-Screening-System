@@ -20,7 +20,7 @@ import com.example.resumescreening.entity.RefreshToken;
 import com.example.resumescreening.repository.RefreshTokenRepository;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired

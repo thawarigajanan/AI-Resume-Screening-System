@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.resumescreening.service.SkillRecommendationService;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -41,6 +43,10 @@ public class CandidateController {
 
     @Autowired
     private CandidateService candidateService;
+    
+    @Autowired
+    private SkillRecommendationService
+            skillRecommendationService;
 
     @Autowired
     private CandidateRepository candidateRepository;
@@ -184,6 +190,16 @@ public class CandidateController {
         return candidateService
                 .getTopCandidates();
     }
+    
+    @GetMapping("/recommendSkills")
+
+    public List<String> recommendSkills(
+
+            @RequestParam String skills) {
+
+        return skillRecommendationService
+                .recommendSkills(skills);
+    }
 
     @GetMapping("/{id}")
     public Candidate getCandidateById(
@@ -235,5 +251,13 @@ public class CandidateController {
 
 	public void setEmailService(EmailService emailService) {
 		this.emailService = emailService;
+	}
+
+	public SkillRecommendationService getSkillRecommendationService() {
+		return skillRecommendationService;
+	}
+
+	public void setSkillRecommendationService(SkillRecommendationService skillRecommendationService) {
+		this.skillRecommendationService = skillRecommendationService;
 	}
 }

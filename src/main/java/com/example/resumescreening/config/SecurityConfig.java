@@ -37,13 +37,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                     .requestMatchers(
-                            "/auth/**",
+                            "/api/auth/**",
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html",
                             "/auth/**",
                             "/candidate/uploadResume",
-                            "/interview/**")
+                            "/interview/**",
+                            "/candidate/recommendSkills",
+                            "/ai/**")
                     .permitAll()
                     
                     

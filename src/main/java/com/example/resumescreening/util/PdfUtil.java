@@ -3,6 +3,7 @@ package com.example.resumescreening.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -13,12 +14,14 @@ public class PdfUtil {
 
         File file = new File(filePath);
 
-        PDDocument document = PDDocument.load(file);
+        PDDocument document =
+                Loader.loadPDF(file);
 
         PDFTextStripper pdfStripper =
                 new PDFTextStripper();
 
-        String text = pdfStripper.getText(document);
+        String text =
+                pdfStripper.getText(document);
 
         document.close();
 
