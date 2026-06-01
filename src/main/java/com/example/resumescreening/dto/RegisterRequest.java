@@ -3,7 +3,9 @@ package com.example.resumescreening.dto;
 public class RegisterRequest {
 
     private String username;
+
     private String password;
+
     private String role;
 
     public String getUsername() {

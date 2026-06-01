@@ -1,18 +1,15 @@
 package com.example.resumescreening.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import java.util.Date;
-
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-
-import javax.crypto.SecretKey;
 
 public class JwtUtil {
 
-    private static final SecretKey SECRET_KEY =
-            Keys.hmacShaKeyFor(
-                    "mysecretkeymysecretkeymysecretkey12"
-                            .getBytes());
+    private static final String SECRET_KEY =
+            "mySuperSecureJwtSecretKeyForSpringBootProject123";
 
     public static String generateToken(String username) {
 
@@ -22,46 +19,40 @@ public class JwtUtil {
                 .setExpiration(
                         new Date(System.currentTimeMillis()
                                 + 1000 * 60 * 60))
-                .signWith(SECRET_KEY)
+                .signWith(
+                        SignatureAlgorithm.HS256,
+                        SECRET_KEY)
                 .compact();
     }
-    
+
     public static String generateRefreshToken(
             String username) {
 
         return Jwts.builder()
-
                 .setSubject(username)
-
                 .setIssuedAt(new Date())
-
                 .setExpiration(
-
-                        new Date(
-                                System.currentTimeMillis()
-                                        + 1000L * 60 * 60 * 24 * 7))
-
-                .signWith(SECRET_KEY)
-
+                        new Date(System.currentTimeMillis()
+                                + 1000L * 60 * 60 * 24 * 7))
+                .signWith(
+                        SignatureAlgorithm.HS256,
+                        SECRET_KEY)
                 .compact();
     }
 
-    public static String extractUsername(String token) {
+    public static Claims extractClaims(
+            String token) {
 
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
-                .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
-    public static boolean validateToken(
-            String token,
-            String username) {
 
-        String extractedUsername =
-                extractUsername(token);
+    public static String extractUsername(
+            String token) {
 
-        return extractedUsername.equals(username);
+        return extractClaims(token)
+                .getSubject();
     }
 }
